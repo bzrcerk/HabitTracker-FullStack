@@ -1,1 +1,1 @@
-export interface Habit {}
+export interface HabitModel {}

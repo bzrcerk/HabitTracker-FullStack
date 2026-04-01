@@ -1,15 +1,20 @@
 import { Routes } from '@angular/router';
-import {Dashboard} from './pages/dashboard/dashboard';
-import {Stats} from 'node:fs';
+import {TodoPage} from './pages/todo-page/todo-page';
+import {HabitsPage} from './pages/habits-page/habits-page';
+import {AnalyticsPage} from './pages/analytics-page/analytics-page';
 
 export const routes: Routes = [
   {
-    path: "dashboard",
-    component : Dashboard
+    path: "todo",
+    component : TodoPage
   },
   {
-    path:"stats",
-    component : Stats
+    path:"habits",
+    component : HabitsPage
+  },
+  {
+    path:"analytics",
+    component : AnalyticsPage
   },
   // {
   //   path:"dashboard/:id",
@@ -17,6 +22,6 @@ export const routes: Routes = [
   // }
   {
     path:"**",
-    redirectTo:"dashboard"
+    redirectTo:"todo"
   }
 ];
