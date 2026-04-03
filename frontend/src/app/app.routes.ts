@@ -16,10 +16,6 @@ export const routes: Routes = [
     path:"analytics",
     component : AnalyticsPage
   },
-  // {
-  //   path:"dashboard/:id",
-  //   component :
-  // }
   {
     path:"**",
     redirectTo:"todo"
