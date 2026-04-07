@@ -1,0 +1,28 @@
+<div class="container">
+  <h2 class="text-2xl">Login</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="email-field w-50%">
+      <input type="email" placeholder="Enter the Email..." formControlName="email">
+
+      @if (submitted && loginForm.get('email')?.hasError('required')) {
+        <p>Email is required!</p>
+      }
+
+      @if (submitted && loginForm.get('email')?.hasError('email')) {
+        <p>Please enter a valid email!</p>
+      }
+    </div>
+
+    <div class="password-field">
+      <input [type]="showPassword ? 'text' : 'password'" placeholder="Enter the password..." formControlName="password">
+      <input type="checkbox" [checked]="showPassword" (change)="showPassword = !showPassword">
+    </div>
+
+    <div>
+      <a routerLink="/register">Sign in now.</a>
+    </div>
+
+    <button type="submit">Login</button>
+  </form>
+</div>
