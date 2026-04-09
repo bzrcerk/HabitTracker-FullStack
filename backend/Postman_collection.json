@@ -1,0 +1,173 @@
+{
+  "info": {
+    "name": "HabitFlow API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8000/api/register/",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"testuser\",\"email\":\"test@test.com\",\"password\":\"test123\",\"password2\":\"test123\"}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8000/api/token/",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"testuser\",\"password\":\"test123\"}"
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8000/api/logout/",
+            "header": [{"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"}]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Habits",
+      "item": [
+        {
+          "name": "List Habits",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8000/api/habits/",
+            "header": [{"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"}]
+          }
+        },
+        {
+          "name": "Create Habit",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8000/api/habits/",
+            "header": [
+              {"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Morning Run\",\"description\":\"30 minutes running\",\"repeat_type\":\"daily\",\"target_days_per_week\":5,\"start_date\":\"2024-01-01\"}"
+            }
+          }
+        },
+        {
+          "name": "Update Habit",
+          "request": {
+            "method": "PUT",
+            "url": "http://localhost:8000/api/habits/1/",
+            "header": [
+              {"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Morning Run Updated\",\"description\":\"45 minutes running\",\"repeat_type\":\"daily\",\"target_days_per_week\":6,\"start_date\":\"2024-01-01\",\"is_active\":true}"
+            }
+          }
+        },
+        {
+          "name": "Delete Habit",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8000/api/habits/1/",
+            "header": [{"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"}]
+          }
+        },
+        {
+          "name": "Habit Stats",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8000/api/habits/1/stats/",
+            "header": [{"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"}]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8000/api/categories/",
+            "header": [{"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"}]
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8000/api/categories/",
+            "header": [
+              {"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Sport\",\"icon\":\"🏃\",\"color\":\"#4CAF50\"}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Habit Logs",
+      "item": [
+        {
+          "name": "Create Log",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8000/api/habit-logs/",
+            "header": [
+              {"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"habit_id\":1,\"completed_date\":\"2024-01-15\",\"status\":\"done\",\"note\":\"Great workout!\"}"
+            }
+          }
+        },
+        {
+          "name": "List Logs",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8000/api/habit-logs/",
+            "header": [{"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"}]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8000/api/dashboard/",
+            "header": [{"key": "Authorization", "value": "Bearer YOUR_ACCESS_TOKEN"}]
+          }
+        }
+      ]
+    }
+  ]
+} 
