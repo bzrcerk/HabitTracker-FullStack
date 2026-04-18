@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {TokenService} from './token-service';
+import { TokenService } from './token-service';
 import { environment } from '../../../envs/env'
 import {Observable, tap} from 'rxjs';
 
