@@ -18,6 +18,7 @@ export class LoginForm {
   submitted : boolean = false;
   isErrorOccurred : boolean = false;
   showPassword : boolean = false;
+  private errorMessage : string = '';
   private authService : AuthService = inject(AuthService);
   private router : Router = inject(Router);
 
@@ -44,9 +45,12 @@ export class LoginForm {
       next: () => {
         this.router.navigate(['/todo']);
         },
-      error: () => {
-        console.log('Error occurred');
-        this.isErrorOccurred = true;
+      error: (err) => {
+        if (err.status === 401) {
+          this.errorMessage = 'User or password is incorrect';
+        } else {
+          this.errorMessage = 'Login failed. Please try again later';
+        }
       }
       }
     )
