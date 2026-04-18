@@ -34,5 +34,6 @@ export class LoginForm {
     }
 
     console.log(`Login data: ${this.loginForm.value}`)
+    // auth logic
   }
 }
