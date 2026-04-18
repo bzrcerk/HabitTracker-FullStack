@@ -32,6 +32,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "https://habittracker-fullstack-frontside.onrender.com",
+]
+
 ROOT_URLCONF = 'habitflow_backend.urls'
 
 TEMPLATES = [
