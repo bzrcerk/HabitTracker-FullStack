@@ -15,6 +15,10 @@
       <input type="checkbox" [checked]="showPassword" (change)="showPassword = !showPassword">
     </div>
 
+    @if ( errorMessage ) {
+      <p>{{ errorMessage }}</p>
+    }
+
     <div>
       <a routerLink="/register">Sign in now.</a>
     </div>

@@ -18,7 +18,7 @@ export class LoginForm {
   submitted : boolean = false;
   isErrorOccurred : boolean = false;
   showPassword : boolean = false;
-  private errorMessage : string = '';
+  protected errorMessage : string = '';
   private authService : AuthService = inject(AuthService);
   private router : Router = inject(Router);
 
