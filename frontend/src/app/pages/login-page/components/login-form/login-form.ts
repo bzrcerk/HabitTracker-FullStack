@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
+import {AuthService} from '../../../../services/auth/auth-service';
 
 
 @Component({
@@ -17,13 +18,16 @@ export class LoginForm {
   submitted : boolean = false;
   isErrorOccurred : boolean = false;
   showPassword : boolean = false;
+  private authService : AuthService = inject(AuthService);
+  private router : Router = inject(Router);
 
   constructor(public fb : FormBuilder) {
     this.loginForm = this.fb.group({
-      email : ['', [Validators.required, Validators.email]],
+      username : ['', [Validators.required]],
       password : ['', Validators.required]
     })
   }
+
 
   onSubmit() {
     this.submitted = true;
@@ -33,7 +37,18 @@ export class LoginForm {
       return;
     }
 
-    console.log(`Login data: ${this.loginForm.value}`)
-    // auth logic
+    const username = this.loginForm.value.username;
+    const password = this.loginForm.value.password;
+
+    this.authService.login(username, password).subscribe({
+      next: () => {
+        this.router.navigate(['/todo']);
+        },
+      error: () => {
+        console.log('Error occurred');
+        this.isErrorOccurred = true;
+      }
+      }
+    )
   }
 }

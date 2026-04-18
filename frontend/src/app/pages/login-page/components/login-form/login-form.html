@@ -3,14 +3,10 @@
 
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <div class="email-field w-50%">
-      <input type="email" placeholder="Enter the Email..." formControlName="email">
+      <input type="text" placeholder="Enter the username..." formControlName="username">
 
-      @if (submitted && loginForm.get('email')?.hasError('required')) {
-        <p>Email is required!</p>
-      }
-
-      @if (submitted && loginForm.get('email')?.hasError('email')) {
-        <p>Please enter a valid email!</p>
+      @if (submitted && loginForm.get('username')?.hasError('required')) {
+        <p>Username is required!</p>
       }
     </div>
 
@@ -23,6 +19,6 @@
       <a routerLink="/register">Sign in now.</a>
     </div>
 
-    <button type="submit">Login</button>
+    <button type="submit" class="cursor-pointer" (click)="onSubmit()">Login</button>
   </form>
 </div>
