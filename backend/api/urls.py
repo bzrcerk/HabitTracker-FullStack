@@ -12,4 +12,6 @@ urlpatterns = [
     path('categories/<int:pk>/', views.CategoryDetailView.as_view(), name='category-detail'),
     path('habit-logs/', views.HabitLogListCreateView.as_view(), name='habit-log-list'),
     path('habit-logs/<int:pk>/', views.HabitLogDetailView.as_view(), name='habit-log-detail'),
+    path('todos/', views.TodoListCreateView.as_view(), name='todo-list'),
+    path('todos/<int:pk>/', views.TodoDetailView.as_view(), name='todo-detail'),
 ]

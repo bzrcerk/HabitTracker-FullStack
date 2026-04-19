@@ -23,3 +23,11 @@ class HabitLogAdmin(admin.ModelAdmin):
 class ReminderAdmin(admin.ModelAdmin):
     list_display = ['habit', 'time', 'is_enabled']
     list_filter = ['is_enabled']
+
+from .models import Todo
+
+@admin.register(Todo)
+class TodoAdmin(admin.ModelAdmin):
+    list_display = ['title', 'user', 'category', 'priority', 'is_completed', 'due_date']
+    list_filter = ['priority', 'is_completed', 'category', 'user']
+    search_fields = ['title', 'user__username']
