@@ -1,5 +1,33 @@
-<ul>
-  @for (h of habits; track h.id) {
-    <li>{{ h.title }}</li>
-  }
-</ul>
+<section class="overflow-hidden rounded-2xl border border-blue-900/60 bg-[#141a30]">
+  <div class="grid grid-cols-[minmax(220px,1.6fr)_repeat(7,minmax(52px,1fr))] gap-0 border-b border-blue-900/60 px-5 py-4 text-sm font-semibold uppercase tracking-wide text-blue-300/60">
+    <span>Habit</span>
+    @for (day of weekDays; track day) {
+      <span class="text-center">{{ day }}</span>
+    }
+  </div>
+
+  <div class="divide-y divide-blue-900/60">
+    @for (habit of habits; track habit.id) {
+      <article class="grid grid-cols-[minmax(220px,1.6fr)_repeat(7,minmax(52px,1fr))] items-center gap-0 px-5 py-4">
+        <div class="flex items-center gap-3">
+          <span class="h-2.5 w-2.5 rounded-full" [style.background-color]="habit.color"></span>
+          <p class="text-2xl">{{ iconFromName(habit.icon) }}</p>
+          <div>
+            <p class="text-xl font-semibold text-blue-50">{{ habit.title }}</p>
+            <p class="text-sm text-blue-300/70">{{ habit.description }}</p>
+          </div>
+        </div>
+
+        @for (day of weekDays; track day; let dayIndex = $index) {
+          <div class="flex justify-center">
+            <span
+              class="h-9 w-9 rounded-full border border-blue-700/60"
+              [style.background-color]="isPlannedDay(habit, dayIndex) ? habit.color : 'transparent'"
+              [style.opacity]="isPlannedDay(habit, dayIndex) ? '1' : '0.25'"
+            ></span>
+          </div>
+        }
+      </article>
+    }
+  </div>
+</section>

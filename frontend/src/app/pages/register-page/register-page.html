@@ -1,1 +1,145 @@
-<p>register-page works!</p>
+<div class="px-4 py-10 sm:py-14">
+  <div class="mx-auto flex min-h-[calc(100vh-4rem)] max-w-md items-center justify-center">
+    <div class="w-full rounded-2xl border border-blue-900/60 bg-[#141a30] p-7 shadow-2xl sm:p-9">
+      <div class="mb-8 text-center">
+        <p class="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-blue-300/60">Habit Tracker</p>
+        <h1 class="text-4xl font-bold tracking-tight text-blue-50">Create account</h1>
+        <p class="mt-2 text-base text-blue-300/80">Start building better routines today.</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate class="space-y-5">
+        <div>
+          <label for="username" class="mb-2 block text-sm font-medium text-blue-200/90">
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            placeholder="Enter your username"
+            formControlName="username"
+            class="block w-full rounded-xl border bg-[#0f1428] px-4 py-3 text-sm text-blue-100 placeholder:text-blue-300/50 outline-none transition"
+            [ngClass]="
+              username?.invalid
+                ? 'border-red-500/80 focus:border-red-400 focus:ring-4 focus:ring-red-500/20'
+                : 'border-blue-800 focus:border-violet-400 focus:ring-4 focus:ring-violet-500/20'
+            "
+          />
+
+          @if (username?.hasError('required')) {
+            <p class="mt-2 text-sm text-red-300">Username is required.</p>
+          }
+          @if (username?.hasError('minlength')) {
+            <p class="mt-2 text-sm text-red-300">Username must be at least 3 characters.</p>
+          }
+          @if (username?.hasError('maxlength')) {
+            <p class="mt-2 text-sm text-red-300">Username must be at most 30 characters.</p>
+          }
+        </div>
+
+        <div>
+          <label for="email" class="mb-2 block text-sm font-medium text-blue-200/90">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="Enter your email"
+            formControlName="email"
+            class="block w-full rounded-xl border bg-[#0f1428] px-4 py-3 text-sm text-blue-100 placeholder:text-blue-300/50 outline-none transition"
+            [ngClass]="
+              email?.invalid
+                ? 'border-red-500/80 focus:border-red-400 focus:ring-4 focus:ring-red-500/20'
+                : 'border-blue-800 focus:border-violet-400 focus:ring-4 focus:ring-violet-500/20'
+            "
+          />
+
+          @if (email?.hasError('required')) {
+            <p class="mt-2 text-sm text-red-300">Email is required.</p>
+          }
+          @if (email?.hasError('email')) {
+            <p class="mt-2 text-sm text-red-300">Enter a valid email address.</p>
+          }
+        </div>
+
+        <div>
+          <label for="password" class="mb-2 block text-sm font-medium text-blue-200/90">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+            formControlName="password"
+            class="block w-full rounded-xl border bg-[#0f1428] px-4 py-3 text-sm text-blue-100 placeholder:text-blue-300/50 outline-none transition"
+            [ngClass]="
+              (password?.invalid) || (registerForm.hasError('passwordsMismatch'))
+                ? 'border-red-500/80 focus:border-red-400 focus:ring-4 focus:ring-red-500/20'
+                : 'border-blue-800 focus:border-violet-400 focus:ring-4 focus:ring-violet-500/20'
+            "
+          />
+
+          @if (password?.hasError('required')) {
+            <p class="mt-2 text-sm text-red-300">Password is required.</p>
+          }
+          @if (password?.hasError('minlength')) {
+            <p class="mt-2 text-sm text-red-300">Password must be at least 8 characters.</p>
+          }
+        </div>
+
+        <div>
+          <label for="password2" class="mb-2 block text-sm font-medium text-blue-200/90">
+            Confirm password
+          </label>
+          <input
+            id="password2"
+            type="password"
+            placeholder="Repeat your password"
+            formControlName="password2"
+            class="block w-full rounded-xl border bg-[#0f1428] px-4 py-3 text-sm text-blue-100 placeholder:text-blue-300/50 outline-none transition"
+            [ngClass]="
+              (password2?.invalid && password2) || (registerForm.hasError('passwordsMismatch'))
+                ? 'border-red-500/80 focus:border-red-400 focus:ring-4 focus:ring-red-500/20'
+                : 'border-blue-800 focus:border-violet-400 focus:ring-4 focus:ring-violet-500/20'
+            "
+          />
+
+          @if (password2?.hasError('required')) {
+            <p class="mt-2 text-sm text-red-300">Please confirm your password.</p>
+          }
+          @if (registerForm.hasError('passwordsMismatch')) {
+            <p class="mt-2 text-sm text-red-300">Passwords do not match.</p>
+          }
+        </div>
+
+        @if (errorMessage) {
+          <div class="rounded-xl border border-red-500/50 bg-red-900/40 px-4 py-3 text-sm text-red-200">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <button
+          type="submit"
+          [disabled]="registerForm.invalid || isSubmitting"
+          class="inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60"
+          [ngClass]="
+            registerForm.invalid || isSubmitting
+              ? 'bg-blue-900/80 text-blue-300'
+              : 'bg-violet-500 hover:bg-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-500/30'
+          "
+        >
+          {{ isSubmitting ? 'Creating account...' : 'Sign up' }}
+        </button>
+      </form>
+
+      <p class="mt-7 text-center text-sm text-blue-200/80">
+        Already have an account?
+        <a
+          routerLink="/login"
+          class="font-medium text-violet-300 transition hover:text-violet-200 hover:underline"
+        >
+          Log in
+        </a>
+      </p>
+    </div>
+  </div>
+</div>

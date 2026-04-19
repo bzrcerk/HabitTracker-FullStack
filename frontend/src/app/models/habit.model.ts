@@ -16,3 +16,17 @@ export interface HabitModel {
   created_at: string;
   updated_at: string;
 }
+
+export interface CreateHabitPayload {
+  title: string;
+  description: string;
+  repeat_type: RepeatTypes;
+  repeat_interval: number;
+  week_days: number[];
+  start_date: string;
+  end_date: string | null;
+  is_active: boolean;
+  color: string;
+  icon: string;
+}
+
