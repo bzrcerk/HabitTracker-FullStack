@@ -1,0 +1,8 @@
+:host {
+  display: block;
+}
+
+section {
+  overflow-x: auto;
+}
+

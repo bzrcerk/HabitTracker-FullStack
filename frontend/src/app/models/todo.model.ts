@@ -11,3 +11,12 @@ export interface TodoModel{
   category: string;
   created_at: string;
 }
+
+export interface CreateTodoPayload {
+  title: string;
+  description: string;
+  due_date: string;
+  priority: Priority;
+  category: string;
+}
+

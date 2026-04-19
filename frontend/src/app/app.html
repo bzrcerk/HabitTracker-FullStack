@@ -1,4 +1,15 @@
-<main class="container">
-  <app-navbar></app-navbar>
-  <router-outlet></router-outlet>
-</main>
+@if (isLoggedIn()) {
+  <main class="min-h-screen p-0 text-blue-100">
+    <div class="mx-auto flex min-h-screen w-full max-w-screen-2xl overflow-hidden border border-blue-900/70 bg-[#070b18] shadow-2xl">
+      <app-navbar class="w-72 shrink-0 border-r border-blue-900/70"></app-navbar>
+
+      <section class="min-w-0 flex-1 overflow-y-auto px-8 py-6">
+        <router-outlet></router-outlet>
+      </section>
+    </div>
+  </main>
+} @else {
+  <main class="min-h-screen bg-transparent px-4 py-6 text-blue-100">
+    <router-outlet></router-outlet>
+  </main>
+}

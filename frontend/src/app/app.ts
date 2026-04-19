@@ -1,7 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {Footer} from './shared/footer/footer';
 import {Navbar} from './shared/navbar/navbar';
+import {AuthService} from './services/auth/auth-service';
 
 @Component({
   selector: 'app-root',
@@ -10,5 +10,9 @@ import {Navbar} from './shared/navbar/navbar';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('frontend');
+  private authService = inject(AuthService);
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
 }

@@ -1,1 +1,53 @@
-<app-habit-list></app-habit-list>
+<section class="space-y-6">
+  <header class="flex flex-wrap items-center justify-between gap-4 border-b border-blue-900/60 pb-5">
+	<h1 class="text-4xl font-semibold text-blue-50">Habits</h1>
+
+	<div class="flex items-center gap-3">
+	  <button class="rounded-xl border border-blue-800 bg-blue-900/60 px-6 py-2.5 text-lg font-medium text-blue-200">Today</button>
+			<button (click)="toggleCreateForm()" class="rounded-xl bg-violet-500 px-6 py-2.5 text-lg font-semibold text-white transition hover:bg-violet-400">+ Add</button>
+	</div>
+  </header>
+
+		  @if (showCreateForm) {
+			<div class="grid gap-3 rounded-2xl border border-blue-900/60 bg-[#151c34] px-5 py-4 md:grid-cols-[1.3fr_1fr_1fr_auto]">
+			  <input [(ngModel)]="newHabit.title" [ngModelOptions]="{standalone: true}" type="text" placeholder="Habit title" class="rounded-xl border border-blue-800 bg-[#0f1428] px-4 py-3 text-blue-100 placeholder:text-blue-300/50 focus:border-violet-400 focus:outline-none">
+			  <input [(ngModel)]="newHabit.description" [ngModelOptions]="{standalone: true}" type="text" placeholder="Description" class="rounded-xl border border-blue-800 bg-[#0f1428] px-4 py-3 text-blue-100 placeholder:text-blue-300/50 focus:border-violet-400 focus:outline-none">
+			  <select [(ngModel)]="newHabit.repeat_type" [ngModelOptions]="{standalone: true}" class="rounded-xl border border-blue-800 bg-[#0f1428] px-4 py-3 text-blue-100 focus:border-violet-400 focus:outline-none">
+				<option value="daily">Daily</option>
+				<option value="weekly">Weekly</option>
+				<option value="monthly">Monthly</option>
+			  </select>
+			  <button (click)="addHabit()" [disabled]="isSubmitting" class="rounded-xl bg-violet-500 px-4 py-3 font-semibold text-white transition hover:bg-violet-400 disabled:opacity-60">Create</button>
+			</div>
+		  }
+
+		  @if (errorMessage) {
+			<p class="rounded-xl border border-red-500/60 bg-red-900/40 px-4 py-3 text-sm text-red-200">{{ errorMessage }}</p>
+		  }
+
+  <div class="flex flex-wrap items-center justify-between gap-4">
+	<div class="inline-flex rounded-2xl border border-blue-900/60 bg-[#151c34] p-1">
+	  <button class="rounded-xl bg-blue-900/80 px-5 py-2 text-base font-semibold text-blue-50">Week</button>
+	  <button class="rounded-xl px-5 py-2 text-base text-blue-300/80 transition hover:bg-blue-900/40 hover:text-blue-100">Month</button>
+	  <button class="rounded-xl px-5 py-2 text-base text-blue-300/80 transition hover:bg-blue-900/40 hover:text-blue-100">Year</button>
+	</div>
+
+	<div class="flex items-center gap-3 text-blue-200/80">
+	  <button class="rounded-lg border border-blue-800 bg-blue-900/60 px-3 py-1 text-lg">&lsaquo;</button>
+	  <p class="text-lg">24 - 30 March</p>
+	  <button class="rounded-lg border border-blue-800 bg-blue-900/60 px-3 py-1 text-lg">&rsaquo;</button>
+	</div>
+  </div>
+
+  <app-habit-list [refreshTick]="refreshTick"></app-habit-list>
+
+  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+	@for (stat of stats; track stat.label) {
+	  <article class="rounded-2xl border border-blue-900/60 bg-[#141a30] p-5 text-center">
+		<p class="text-6xl font-bold" [style.color]="stat.color">{{ stat.value }}</p>
+		<p class="mt-2 text-lg uppercase tracking-wide text-blue-300/70">{{ stat.label }}</p>
+	  </article>
+	}
+  </div>
+</section>
+

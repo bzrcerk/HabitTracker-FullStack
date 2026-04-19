@@ -1,1 +1,76 @@
-<p>todo-page works!</p>
+<section class="space-y-6">
+  <header class="flex flex-wrap items-center justify-between gap-4 border-b border-blue-900/60 pb-5">
+	<h1 class="text-4xl font-semibold text-blue-50">Todo</h1>
+
+	<div class="flex items-center gap-3">
+	  <button class="rounded-xl border border-blue-800 bg-blue-900/60 px-6 py-2.5 text-lg font-medium text-blue-200">Today</button>
+			<button (click)="addTodo()" class="rounded-xl bg-violet-500 px-6 py-2.5 text-lg font-semibold text-white transition hover:bg-violet-400 disabled:opacity-60" [disabled]="isSubmitting">+ Add</button>
+	</div>
+  </header>
+
+		  @if (selectedCategory) {
+			<div class="flex items-center gap-3 text-sm text-blue-200/90">
+			  <span class="rounded-full border border-blue-700 bg-blue-900/60 px-3 py-1">Category: {{ selectedCategory }}</span>
+			  <button (click)="clearCategoryFilter()" class="rounded-lg border border-blue-800 px-3 py-1 text-blue-300 transition hover:bg-blue-900/40">Clear</button>
+			</div>
+		  }
+
+  <div class="inline-flex rounded-2xl border border-blue-900/60 bg-[#151c34] p-1">
+	@for (filter of filters; track filter.value) {
+	  <button
+		(click)="setFilter(filter.value)"
+		[class]="isFilterActive(filter.value)
+		  ? 'rounded-xl bg-blue-900/80 px-5 py-2 text-base font-semibold text-blue-50'
+		  : 'rounded-xl px-5 py-2 text-base text-blue-300/80 transition hover:bg-blue-900/40 hover:text-blue-100'"
+	  >
+		{{ filter.label }}
+	  </button>
+	}
+  </div>
+
+  <div class="grid gap-3 rounded-2xl border border-blue-900/60 bg-[#151c34] px-5 py-4 md:grid-cols-[2fr_1fr_1fr_auto]">
+	<input [(ngModel)]="newTask.title" [ngModelOptions]="{standalone: true}" type="text" placeholder="Add a task..." class="rounded-xl border border-blue-800 bg-[#0f1428] px-4 py-3 text-blue-100 placeholder:text-blue-300/50 focus:border-violet-400 focus:outline-none">
+	<input [(ngModel)]="newTask.category" [ngModelOptions]="{standalone: true}" type="text" placeholder="Category" class="rounded-xl border border-blue-800 bg-[#0f1428] px-4 py-3 text-blue-100 placeholder:text-blue-300/50 focus:border-violet-400 focus:outline-none">
+	<input [(ngModel)]="newTask.due_date" [ngModelOptions]="{standalone: true}" type="date" class="rounded-xl border border-blue-800 bg-[#0f1428] px-4 py-3 text-blue-100 focus:border-violet-400 focus:outline-none">
+	<button (click)="addTodo()" [disabled]="isSubmitting" class="rounded-xl bg-violet-500 px-4 py-3 font-semibold text-white transition hover:bg-violet-400 disabled:opacity-60">Create</button>
+  </div>
+
+  @if (errorMessage) {
+    <p class="rounded-xl border border-red-500/60 bg-red-900/40 px-4 py-3 text-sm text-red-200">{{ errorMessage }}</p>
+  }
+
+  <div class="space-y-6">
+	@for (group of groupedTodos; track group.category) {
+	  <section class="space-y-3">
+		<h2 class="text-xl font-semibold uppercase tracking-wide text-blue-200/80">{{ group.category }}</h2>
+
+		<div class="space-y-3">
+		  @for (todo of group.todos; track todo.id) {
+			<article class="flex items-center justify-between rounded-2xl border border-blue-900/60 bg-[#141a30] px-5 py-4">
+			  <div class="flex items-center gap-4">
+				<span
+				  class="h-6 w-6 rounded-md border border-blue-700/70"
+				  [class.bg-violet-500]="todo.is_completed"
+				  [class.border-violet-500]="todo.is_completed"
+				></span>
+				<p
+				  class="text-xl text-blue-50"
+				  [class.line-through]="todo.is_completed"
+				  [style.color]="todo.is_completed ? 'rgba(147, 197, 253, 0.4)' : '#eff6ff'"
+				>
+				  {{ todo.title }}
+				</p>
+			  </div>
+
+			  <span class="text-base uppercase tracking-wide text-blue-300/60">{{ dueLabelMap.get(todo.id) }}</span>
+			</article>
+		  }
+		</div>
+	  </section>
+	}
+
+	@if (groupedTodos.length === 0) {
+	  <p class="rounded-xl border border-blue-900/60 bg-[#141a30] px-5 py-4 text-blue-300/70">No tasks found for this filter.</p>
+	}
+  </div>
+</section>
