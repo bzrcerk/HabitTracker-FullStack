@@ -6,7 +6,8 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from datetime import date, timedelta
-
+from .models import Todo
+from .serializers import TodoSerializer
 from .models import Category, Habit, HabitLog
 from .serializers import (
     CategorySerializer, HabitSerializer, HabitLogSerializer,
@@ -70,6 +71,34 @@ def habit_stats(request, habit_id):
     })
     return Response(serializer.data)
 
+class TodoListCreateView(generics.ListCreateAPIView):
+    serializer_class = TodoSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        queryset = Todo.objects.filter(user=self.request.user)
+        
+        status = self.request.query_params.get('status', None)
+        if status == 'active':
+            queryset = queryset.filter(is_completed=False)
+        elif status == 'completed':
+            queryset = queryset.filter(is_completed=True)
+        
+        category = self.request.query_params.get('category', None)
+        if category:
+            queryset = queryset.filter(category_id=category)
+        
+        return queryset
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TodoSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user)
 class HabitListCreateView(generics.ListCreateAPIView):
     serializer_class = HabitSerializer
     permission_classes = [IsAuthenticated]
