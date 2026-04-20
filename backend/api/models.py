@@ -29,6 +29,7 @@ class Habit(models.Model):
     description = models.TextField(blank=True)
     repeat_type = models.CharField(max_length=20, choices=REPEAT_CHOICES, default='daily')
     target_days_per_week = models.IntegerField(default=7, validators=[MinValueValidator(1), MaxValueValidator(7)])
+    week_days = models.JSONField(default=list, blank=True)
     start_date = models.DateField(default=date.today)
     end_date = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=True)

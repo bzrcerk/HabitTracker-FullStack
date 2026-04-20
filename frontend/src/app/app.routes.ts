@@ -30,8 +30,4 @@ export const routes: Routes = [
     path:"register",
     component : RegisterPage
   },
-  {
-    path:"**",
-    redirectTo:"todo"
-  }
 ];

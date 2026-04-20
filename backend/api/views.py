@@ -86,8 +86,11 @@ class TodoListCreateView(generics.ListCreateAPIView):
         
         category = self.request.query_params.get('category', None)
         if category:
-            queryset = queryset.filter(category_id=category)
-        
+            if str(category).isdigit():
+                queryset = queryset.filter(category_id=int(category))
+            else:
+                queryset = queryset.filter(category__name__iexact=category)
+
         return queryset
     
     def perform_create(self, serializer):

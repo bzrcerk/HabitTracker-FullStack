@@ -3,7 +3,7 @@
 	<h1 class="text-4xl font-semibold text-blue-50">Todo</h1>
 
 	<div class="flex items-center gap-3">
-	  <button class="rounded-xl border border-blue-800 bg-blue-900/60 px-6 py-2.5 text-lg font-medium text-blue-200">Today</button>
+	  <button (click)="toggleTodayOnly()" [class]="showTodayOnly ? 'rounded-xl border border-violet-400 bg-violet-500/30 px-6 py-2.5 text-lg font-medium text-blue-50' : 'rounded-xl border border-blue-800 bg-blue-900/60 px-6 py-2.5 text-lg font-medium text-blue-200'">Today</button>
 			<button (click)="addTodo()" class="rounded-xl bg-violet-500 px-6 py-2.5 text-lg font-semibold text-white transition hover:bg-violet-400 disabled:opacity-60" [disabled]="isSubmitting">+ Add</button>
 	</div>
   </header>
@@ -48,11 +48,14 @@
 		  @for (todo of group.todos; track todo.id) {
 			<article class="flex items-center justify-between rounded-2xl border border-blue-900/60 bg-[#141a30] px-5 py-4">
 			  <div class="flex items-center gap-4">
-				<span
+				<button
+				  type="button"
+				  (click)="toggleTodoCompletion(todo)"
 				  class="h-6 w-6 rounded-md border border-blue-700/70"
 				  [class.bg-violet-500]="todo.is_completed"
 				  [class.border-violet-500]="todo.is_completed"
-				></span>
+				  [disabled]="isUpdating"
+				></button>
 				<p
 				  class="text-xl text-blue-50"
 				  [class.line-through]="todo.is_completed"

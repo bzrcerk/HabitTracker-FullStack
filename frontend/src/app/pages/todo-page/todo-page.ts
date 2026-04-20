@@ -1,4 +1,6 @@
-import { Component, inject } from '@angular/core';
+import {Component, OnInit, inject, ChangeDetectorRef} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
 import {TodoModel} from '../../models/todo.model';
 import {TodoService} from '../../services/features/todo-service';
 
@@ -11,14 +13,17 @@ interface TodoGroup {
 
 @Component({
   selector: 'app-todo-page',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './todo-page.html',
   styleUrl: './todo-page.css',
 })
-export class TodoPage {
+export class TodoPage implements OnInit {
   private todoService = inject(TodoService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
-  readonly todos: TodoModel[] = [];
+  todos: TodoModel[] = [];
   readonly filters: Array<{ label: string; value: TodoFilter }> = [
     { label: 'All', value: 'all' },
     { label: 'Active', value: 'active' },
@@ -26,14 +31,95 @@ export class TodoPage {
   ];
 
   activeFilter: TodoFilter = 'all';
+  showTodayOnly = false;
+  selectedCategory = '';
+  isSubmitting = false;
+  isUpdating = false;
+  errorMessage = '';
+  newTask = {
+    title: '',
+    category: '',
+    due_date: this.getTodayDate()
+  };
 
-  constructor() {
-    this.todoService.getTodos().subscribe({
-      next: (todos) => {
-        this.todos.splice(0, this.todos.length, ...todos);
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      this.selectedCategory = params.get('category') ?? '';
+      this.loadTodos();
+      this.cdr.detectChanges();
+    });
+  }
+
+  addTodo(): void {
+    const title = this.newTask.title.trim();
+
+    if (!title) {
+      this.errorMessage = 'Task title is required.';
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.errorMessage = '';
+
+    this.todoService.createTodo({
+      title,
+      description: '',
+      due_date: this.newTask.due_date || this.getTodayDate(),
+      priority: 'medium',
+      category: this.newTask.category.trim() || this.selectedCategory || 'General'
+    }).subscribe({
+      next: (createdTodo) => {
+        this.isSubmitting = false;
+        this.activeFilter = 'all';
+        this.newTask.title = '';
+        this.newTask.category = '';
+        this.newTask.due_date = this.getTodayDate();
+
+        this.todos = [createdTodo, ...this.todos];
+
+        if (
+          this.selectedCategory &&
+          createdTodo.category.toLowerCase() !== this.selectedCategory.toLowerCase()
+        ) {
+          this.router.navigate(['/todo']);
+          return;
+        }
+
+        this.loadTodos();
+        this.cdr.detectChanges();
       },
       error: () => {
-        this.todos.splice(0, this.todos.length);
+        this.isSubmitting = false;
+        this.errorMessage = 'Could not create task. Please try again.';
+      }
+    });
+  }
+
+  clearCategoryFilter(): void {
+    this.router.navigate(['/todo']);
+  }
+
+  toggleTodayOnly(): void {
+    this.showTodayOnly = !this.showTodayOnly;
+  }
+
+  toggleTodoCompletion(todo: TodoModel): void {
+    if (this.isUpdating) {
+      return;
+    }
+
+    this.isUpdating = true;
+    const nextValue = !todo.is_completed;
+
+    this.todoService.updateTodoCompletion(todo.id, nextValue).subscribe({
+      next: (updatedTodo) => {
+        this.isUpdating = false;
+        this.todos = this.todos.map((item) => (item.id === todo.id ? updatedTodo : item));
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isUpdating = false;
+        this.errorMessage = 'Could not update task status.';
       }
     });
   }
@@ -48,6 +134,10 @@ export class TodoPage {
 
   get groupedTodos(): TodoGroup[] {
     const filteredTodos = this.todos.filter((todo) => {
+      if (this.showTodayOnly && todo.due_date !== this.getTodayDate()) {
+        return false;
+      }
+
       if (this.activeFilter === 'active') {
         return !todo.is_completed;
       }
@@ -90,6 +180,23 @@ export class TodoPage {
         return [todo.id, date.toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase()];
       })
     );
+  }
+
+  private loadTodos(): void {
+    this.todoService.getTodos(this.selectedCategory || undefined).subscribe({
+      next: (todos) => {
+        this.todos = todos.reverse();
+        this.errorMessage = '';
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Could not load tasks from backend.';
+      }
+    });
+  }
+
+  private getTodayDate(): string {
+    return new Date().toISOString().split('T')[0];
   }
 
 }
