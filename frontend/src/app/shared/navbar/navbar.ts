@@ -1,9 +1,10 @@
-import {Component, inject} from '@angular/core';
-import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import {ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {TokenService} from '../../services/auth/token-service';
-import {AnalyticsService} from '../../services/features/analytics-service';
+import {CategoryService} from '../../services/features/category-service';
 import {TodoService} from '../../services/features/todo-service';
-import {filter} from 'rxjs';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -14,53 +15,38 @@ import {filter} from 'rxjs';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar {
+export class Navbar implements OnInit {
     private tokenService : TokenService = inject(TokenService);
     private router : Router = inject(Router);
-    private analyticsService = inject(AnalyticsService);
-    private todoService = inject(TodoService);
+    private categoryService = inject(CategoryService);
+    private cdr = inject(ChangeDetectorRef);
 
-    pendingTodos = 0;
-    isTodoRoute = false;
-    selectedCategory = '';
-    categories: Array<{ name: string; color: string }> = [];
 
-    constructor() {
-      this.analyticsService.getDashboardStats().subscribe({
-        next: (stats) => {
-          this.pendingTodos = stats.pending_todos;
-        }
-      });
+    protected isLoading = true;
+    protected categories: Array<{ name: string; color: string }> = [];
 
-      this.updateRouteState(this.router.url);
-      this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event) => {
-        const navEvent = event as NavigationEnd;
-        this.updateRouteState(navEvent.urlAfterRedirects);
-      });
-
+    ngOnInit(): void {
       this.loadCategories();
+      this.cdr.detectChanges();
+    }
+
+    get isTodoRoute(): boolean {
+      return this.router.url.startsWith('/todo');
     }
 
     private loadCategories(): void {
-      const categoryColors = ['#fb7185', '#60a5fa', '#a78bfa', '#5eead4', '#fbbf24', '#34d399'];
-
-      this.todoService.getTodos().subscribe({
-        next: (todos) => {
-          const uniqueNames = Array.from(new Set(todos.map((todo) => todo.category).filter(Boolean))).sort((a, b) => a.localeCompare(b));
-          this.categories = uniqueNames.map((name, index) => ({
-            name,
-            color: categoryColors[index % categoryColors.length]
-          }));
+      this.categoryService.getCategories().subscribe({
+        next: (categories) => {
+          this.categories = categories
+            .slice()
+            .map((category) => ({
+              name: category.name,
+              color: category.color
+            }));
+          this.isLoading = false;
+          this.cdr.detectChanges();
         }
       });
-    }
-
-    private updateRouteState(url: string): void {
-      const [path, queryString] = url.split('?');
-      this.isTodoRoute = path.startsWith('/todo');
-
-      const params = new URLSearchParams(queryString ?? '');
-      this.selectedCategory = params.get('category') ?? '';
     }
 
     logout() {

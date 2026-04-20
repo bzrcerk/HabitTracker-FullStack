@@ -2,31 +2,32 @@ import { RepeatTypes } from './types';
 
 export interface HabitModel {
   id: number;
-  user_id: number;
+  user: number;
   title: string;
   description: string;
+  category: number | null;
+  category_name?: string;
   repeat_type: RepeatTypes;
-  repeat_interval: number;
-  week_days: number[]; // 0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sat, 6=Sun
+  target_days_per_week: number;
+  week_days: number[];
   start_date: string;
   end_date: string | null;
   is_active: boolean;
-  color: string;
-  icon: string;
   created_at: string;
   updated_at: string;
+  color?: string;
+  icon?: string;
 }
 
 export interface CreateHabitPayload {
   title: string;
   description: string;
+  category?: number | null;
   repeat_type: RepeatTypes;
-  repeat_interval: number;
+  target_days_per_week: number;
   week_days: number[];
   start_date: string;
   end_date: string | null;
   is_active: boolean;
-  color: string;
-  icon: string;
 }
 

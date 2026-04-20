@@ -1,7 +1,7 @@
 <aside class="flex h-full flex-col bg-[#111629]/95 px-5 py-8 text-blue-100">
   <div class="mb-10 flex items-center gap-3">
     <span class="h-2.5 w-2.5 rounded-full bg-violet-400"></span>
-    <p class="text-3xl font-bold tracking-wide">Productive</p>
+    <p class="text-3xl font-bold tracking-wide">HabitFlow</p>
   </div>
 
   <p class="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-blue-300/60">Menu</p>
@@ -13,7 +13,6 @@
       class="flex items-center justify-between rounded-xl px-4 py-3 text-lg text-blue-200/80 transition hover:bg-blue-900/30 hover:text-white"
     >
       <span>Todo</span>
-      <span class="rounded-full bg-violet-500 px-2 py-0.5 text-xs font-semibold text-white">{{ pendingTodos }}</span>
     </a>
 
     <a
@@ -35,24 +34,27 @@
 
   <div class="mt-auto space-y-4">
     @if (isTodoRoute) {
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300/60">Categories</p>
+      @if (isLoading) {
+        <h1 class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300/60 mt-5">Loading...</h1>
+      } @else {
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300/60 mt-5">Categories</p>
 
-      <ul class="space-y-3">
-        @for (category of categories; track category.name) {
-          <li>
-            <a
-              [routerLink]="'/todo'"
-              [queryParams]="{ category: category.name }"
-              class="flex items-center gap-3 rounded-lg px-2 py-1 text-lg text-blue-200/80 transition hover:bg-blue-900/30 hover:text-white"
-              [class.bg-blue-900/40]="selectedCategory === category.name"
-              [class.text-white]="selectedCategory === category.name"
-            >
-              <span class="h-2.5 w-2.5 rounded-full" [style.background-color]="category.color"></span>
-              {{ category.name }}
-            </a>
-          </li>
-        }
-      </ul>
+        <ul class="space-y-3">
+          @for (category of categories; track category.name) {
+            <li>
+              <a
+                [routerLink]="'/todo'"
+                [queryParams]="{ category: category.name }"
+                class="flex items-center gap-3 rounded-lg px-2 py-1 text-lg text-blue-200/80 transition hover:bg-blue-900/30 hover:text-white"
+                routerLinkActive=" bg-blue-900 text-white"
+              >
+                <span class="h-2.5 w-2.5 rounded-full" [style.background-color]="category.color"></span>
+                {{ category.name }}
+              </a>
+            </li>
+          }
+        </ul>
+      }
     }
 
     <button

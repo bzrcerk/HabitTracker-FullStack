@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import {AnalyticsService} from '../../services/features/analytics-service';
 import {DashboardStatsModel} from '../../models/dashboard-stats.model';
 
@@ -8,9 +8,11 @@ import {DashboardStatsModel} from '../../models/dashboard-stats.model';
   templateUrl: './analytics-page.html',
   styleUrl: './analytics-page.css',
 })
-export class AnalyticsPage {
+export class AnalyticsPage implements OnInit {
   private analyticsService = inject(AnalyticsService);
-  readonly stats: DashboardStatsModel = {
+  private cdr = inject(ChangeDetectorRef);
+
+  stats: DashboardStatsModel = {
     total_habits: 0,
     active_habits: 0,
     completed_today: 0,
@@ -19,7 +21,7 @@ export class AnalyticsPage {
     completed_todos: 0,
     streak_days: 0
   };
-  readonly weekdayData = [
+  weekdayData = [
     { day: 'Mon', value: 0 },
     { day: 'Tue', value: 0 },
     { day: 'Wed', value: 0 },
@@ -28,17 +30,18 @@ export class AnalyticsPage {
     { day: 'Sat', value: 0 },
     { day: 'Sun', value: 0 }
   ];
-  readonly categoryBreakdown: Array<{ name: string; count: number; percent: number; color: string }> = [];
+  categoryBreakdown: Array<{ name: string; count: number; percent: number; color: string }> = [];
   completionRate = 0;
   donutStyle = 'conic-gradient(#1e293b 0% 100%)';
 
-  constructor() {
+  ngOnInit(): void {
     this.analyticsService.getAnalyticsData().subscribe((analytics) => {
-      Object.assign(this.stats, analytics.stats);
-      this.weekdayData.splice(0, this.weekdayData.length, ...analytics.weekdayData);
-      this.categoryBreakdown.splice(0, this.categoryBreakdown.length, ...analytics.categoryBreakdown);
+      this.stats = { ...analytics.stats };
+      this.weekdayData = [...analytics.weekdayData];
+      this.categoryBreakdown = [...analytics.categoryBreakdown];
       this.completionRate = analytics.completionRate;
       this.donutStyle = analytics.donutStyle;
+      this.cdr.detectChanges();
     });
   }
 }

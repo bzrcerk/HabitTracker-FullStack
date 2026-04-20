@@ -51,7 +51,7 @@ export class AuthService {
   refreshToken () : Observable<TokenRes> {
     const refresh = this.tokenRes.getRefreshTokenKey();
 
-    return this.http.post<TokenRes>(`${this.apiUrl}/refresh`, {
+    return this.http.post<TokenRes>(`${this.apiUrl}/token/refresh/`, {
       refresh
     }).pipe(
       tap(tokens => {

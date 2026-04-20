@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../envs/env';
 import {Observable, map} from 'rxjs';
 import {CreateHabitPayload, HabitModel} from '../../models/habit.model';
+import {HabitStatsModel} from '../../models/HabitStatsModel';
 
 @Injectable({
   providedIn: 'root',
@@ -12,21 +13,13 @@ export class HabitService {
 
   constructor(private http: HttpClient) {}
 
-  getHabits(): Observable<HabitModel[]> {
-    return this.http
-      .get<HabitModel[] | { results: HabitModel[] }>(`${this.apiUrl}/habits/`)
-      .pipe(map((response) => this.unwrapListResponse(response)));
+  getHabits(categoryId?: number): Observable<HabitModel[]> {
+    const query = typeof categoryId === 'number' ? `?category=${categoryId}` : '';
+
+    return this.http.get<HabitModel[]>(`${this.apiUrl}/habits/${query}`)
   }
 
   createHabit(payload: CreateHabitPayload): Observable<HabitModel> {
     return this.http.post<HabitModel>(`${this.apiUrl}/habits/`, payload);
-  }
-
-  private unwrapListResponse<T>(response: T[] | { results: T[] }): T[] {
-    if (Array.isArray(response)) {
-      return response;
-    }
-
-    return response.results ?? [];
   }
 }
