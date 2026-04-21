@@ -21,6 +21,7 @@ export class AnalyticsPage implements OnInit {
     completed_todos: 0,
     streak_days: 0
   };
+
   weekdayData = [
     { day: 'Mon', value: 0 },
     { day: 'Tue', value: 0 },
@@ -30,6 +31,7 @@ export class AnalyticsPage implements OnInit {
     { day: 'Sat', value: 0 },
     { day: 'Sun', value: 0 }
   ];
+  
   categoryBreakdown: Array<{ name: string; count: number; percent: number; color: string }> = [];
   completionRate = 0;
   donutStyle = 'conic-gradient(#1e293b 0% 100%)';
