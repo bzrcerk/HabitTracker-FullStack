@@ -63,7 +63,6 @@ export class HabitsPage implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Force a first refresh once child is mounted to avoid occasional empty first paint.
     queueMicrotask(() => this.habitList?.refresh());
   }
 
@@ -168,8 +167,8 @@ export class HabitsPage implements AfterViewInit {
         : Number(this.newHabit.category);
 
     return {
-      title: this.newHabit.title.trim(),
-      description: this.newHabit.description.trim(),
+      title: this.newHabit.title,
+      description: this.newHabit.description,
       category: Number.isNaN(normalizedCategory as number) ? null : normalizedCategory,
       repeat_type: normalizedRepeatType,
       target_days_per_week: Number.isNaN(normalizedTarget) ? 7 : Math.max(1, Math.min(7, Math.round(normalizedTarget))),
