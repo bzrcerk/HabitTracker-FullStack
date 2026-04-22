@@ -4,14 +4,15 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
-  ReactiveFormsModule, ValidationErrors,
+  ReactiveFormsModule,
+  ValidationErrors,
   ValidatorFn,
   Validators
 } from '@angular/forms';
 import {AuthService} from '../../services/auth/auth-service';
 import {Router, RouterLink} from '@angular/router';
-import {validate} from '@angular/forms/signals';
 import {NgClass} from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 
 function passwordsMatchValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -47,8 +48,8 @@ export class RegisterPage {
     this.registerForm = fb.group({
       username : new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
       email : new FormControl('', [Validators.required, Validators.email]),
-      password : new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
-      password2 : new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)])
+      password : new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]),
+      password2 : new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30)])
     },
       {validators : passwordsMatchValidator()}
     )
@@ -68,22 +69,56 @@ export class RegisterPage {
   }
 
   protected onSubmit() {
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
     const username = this.registerForm.value.username;
     const email = this.registerForm.value.email;
     const password = this.registerForm.value.password;
     const password2 = this.registerForm.value.password2;
 
     this.isSubmitting = true;
+    this.errorMessage = '';
 
     this.registerService.register({username, email, password, password2}).subscribe({
       next: () => {
         this.isSubmitting = false;
         this.router.navigate(['/login'])
       },
-      error: error => {
+      error: (error: HttpErrorResponse) => {
         this.isSubmitting = false;
-        this.errorMessage = "Something went wrong. Please try again later";
+        this.errorMessage = this.getRegisterErrorMessage(error);
       }
     });
+  }
+
+  private getRegisterErrorMessage(error: HttpErrorResponse): string {
+    const data = error.error;
+
+    if (typeof data === 'string' && data.trim()) {
+      return data;
+    }
+
+    if (data?.detail) {
+      return data.detail;
+    }
+
+    if (data && typeof data === 'object') {
+      const firstKey = Object.keys(data)[0];
+      const firstValue = data[firstKey];
+      if (Array.isArray(firstValue) && firstValue.length > 0) {
+        return String(firstValue[0]);
+      }
+      if (typeof firstValue === 'string') {
+        return firstValue;
+      }
+      if (Array.isArray(data.non_field_errors) && data.non_field_errors.length > 0) {
+        return String(data.non_field_errors[0]);
+      }
+    }
+
+    return 'Registration failed. Please check your data and try again.';
   }
 }

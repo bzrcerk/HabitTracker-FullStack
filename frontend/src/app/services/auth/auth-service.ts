@@ -16,6 +16,15 @@ interface RegisterData {
   password2 : string;
 }
 
+interface RegisterResponse {
+  user: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -36,8 +45,8 @@ export class AuthService {
     )
   }
 
-  register (data : RegisterData) : Observable<RegisterData> {
-    return this.http.post<RegisterData>(`${this.apiUrl}/register/`, data);
+  register (data : RegisterData) : Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/register/`, data);
   }
 
   logout () : void {
